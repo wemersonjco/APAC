@@ -18,10 +18,54 @@
             margin: 0 auto;
         }
         
+        .menu-container {
+            background-color: #f9f9f9;
+            border: 2px solid #333;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .menu-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .menu-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .menu-selector label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .menu-selector select {
+            padding: 5px 10px;
+            font-size: 12px;
+            border: 1px solid #999;
+            border-radius: 3px;
+            background-color: white;
+            cursor: pointer;
+            flex: 1;
+            max-width: 400px;
+        }
+        
         .formulario {
             border: 1px solid #000;
             padding: 10px;
             width: 100%;
+            display: none;
+        }
+        
+        .formulario.active {
+            display: block;
         }
         
         .cabecalho {
@@ -123,17 +167,17 @@
             opacity: 0.8;
         }
         
-        #btnLimpar {
+        .btnLimpar {
             background-color: #f44336;
         }
         
-        #btnImprimir {
+        .btnImprimir {
             background-color: #2196F3;
         }
         
         @media print {
-            .botoes {
-                display: none;
+            .botoes, .menu-container {
+                display: none !important;
             }
             
             body {
@@ -194,7 +238,20 @@
     </style>
 </head>
 <body>
-    <div class="formulario">
+    <!-- Menu de Seleção -->
+    <div class="menu-container">
+        <div class="menu-title">Sistema de Laudos APAC - SUS</div>
+        <div class="menu-selector">
+            <label for="tipoDocumento">Selecione o tipo de documento:</label>
+            <select id="tipoDocumento" onchange="trocarFormulario()">
+                <option value="endoscopia">APAC - Endoscopia (Pós-operatório Bariátrica)</option>
+                <option value="cirurgia">APAC - Cirurgia Geral (Colelitíase)</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Formulário 1: Endoscopia -->
+    <div class="formulario active" id="formEndoscopia">
         <div class="cabecalho">
             <div class="logo-sus">Sistema<br>Único de<br>Saúde</div>
             <div class="titulo">LAUDO PARA SOLICITAÇÃO/AUTORIZAÇÃO DE<br>PROCEDIMENTO AMBULATORIAL</div>
@@ -207,13 +264,13 @@
                 <div class="coluna col-9">
                     <div class="campo">
                         <label class="rotulo">1 - NOME DO ESTABELECIMENTO DE SAÚDE SOLICITANTE</label>
-                        <input type="text" id="estabelecimentoSolicitante" value="HOSPITAL METROPOLITANO DE VÁRZEA GRANDE">
+                        <input type="text" id="estabelecimentoSolicitante1" value="HOSPITAL METROPOLITANO DE VÁRZEA GRANDE">
                     </div>
                 </div>
                 <div class="coluna col-3">
                     <div class="campo">
                         <label class="rotulo">2 - CNES</label>
-                        <input type="text" id="cnesSolicitante" value="6853781">
+                        <input type="text" id="cnesSolicitante1" value="6853781">
                     </div>
                 </div>
             </div>
@@ -225,24 +282,24 @@
                 <div class="coluna col-8">
                     <div class="campo">
                         <label class="rotulo">3 - NOME DO PACIENTE</label>
-                        <input type="text" id="nomePaciente">
+                        <input type="text" id="nomePaciente1">
                     </div>
                 </div>
                 <div class="coluna col-2">
                     <div class="campo">
                         <label class="rotulo">4 - SEXO</label>
                         <div class="checkbox-group">
-                            <input type="radio" id="sexoMasc" name="sexo" value="Mas.">
-                            <label for="sexoMasc">Mas.</label>
-                            <input type="radio" id="sexoFem" name="sexo" value="Fem.">
-                            <label for="sexoFem">Fem.</label>
+                            <input type="radio" id="sexoMasc1" name="sexo1" value="Mas.">
+                            <label for="sexoMasc1">Mas.</label>
+                            <input type="radio" id="sexoFem1" name="sexo1" value="Fem.">
+                            <label for="sexoFem1">Fem.</label>
                         </div>
                     </div>
                 </div>
                 <div class="coluna col-2">
                     <div class="campo">
                         <label class="rotulo">5 - Nº DO PRONTUÁRIO</label>
-                        <input type="text" id="numProntuario">
+                        <input type="text" id="numProntuario1">
                     </div>
                 </div>
             </div>
@@ -251,19 +308,19 @@
                 <div class="coluna col-4">
                     <div class="campo">
                         <label class="rotulo">6 - CARTÃO NACIONAL DE SAÚDE (CNS)</label>
-                        <input type="text" id="cns">
+                        <input type="text" id="cns1">
                     </div>
                 </div>
                 <div class="coluna col-2">
                     <div class="campo">
                         <label class="rotulo">7 - DATA DE NASCIMENTO</label>
-                        <input type="date" id="dataNascimento">
+                        <input type="date" id="dataNascimento1">
                     </div>
                 </div>
                 <div class="coluna col-2">
                     <div class="campo">
                         <label class="rotulo">8 - RAÇA/COR</label>
-                        <select id="racaCor">
+                        <select id="racaCor1">
                             <option value=""></option>
                             <option value="1">Branca</option>
                             <option value="2">Preta</option>
@@ -276,7 +333,7 @@
                 <div class="coluna col-4">
                     <div class="campo">
                         <label class="rotulo">8.1 - ETNIA</label>
-                        <input type="text" id="etnia">
+                        <input type="text" id="etnia1">
                     </div>
                 </div>
             </div>
@@ -285,15 +342,15 @@
                 <div class="coluna col-6">
                     <div class="campo">
                         <label class="rotulo">9 - NOME DA MÃE</label>
-                        <input type="text" id="nomeMae">
+                        <input type="text" id="nomeMae1">
                     </div>
                 </div>
                 <div class="coluna col-6">
                     <div class="campo">
                         <label class="rotulo">10 - TELEFONE DE CONTATO</label>
                         <div class="linha">
-                            <input type="text" id="dddContato" placeholder="DDD" style="width: 50px; margin-right: 5px;">
-                            <input type="text" id="telefoneContato" placeholder="Nº DO TELEFONE">
+                            <input type="text" id="dddContato1" placeholder="DDD" style="width: 50px; margin-right: 5px;">
+                            <input type="text" id="telefoneContato1" placeholder="Nº DO TELEFONE">
                         </div>
                     </div>
                 </div>
@@ -303,15 +360,15 @@
                 <div class="coluna col-6">
                     <div class="campo">
                         <label class="rotulo">11 - NOME DO RESPONSÁVEL</label>
-                        <input type="text" id="nomeResponsavel">
+                        <input type="text" id="nomeResponsavel1">
                     </div>
                 </div>
                 <div class="coluna col-6">
                     <div class="campo">
                         <label class="rotulo">12 - TELEFONE DE CONTATO</label>
                         <div class="linha">
-                            <input type="text" id="dddResponsavel" placeholder="DDD" style="width: 50px; margin-right: 5px;">
-                            <input type="text" id="telefoneResponsavel" placeholder="Nº DO TELEFONE">
+                            <input type="text" id="dddResponsavel1" placeholder="DDD" style="width: 50px; margin-right: 5px;">
+                            <input type="text" id="telefoneResponsavel1" placeholder="Nº DO TELEFONE">
                         </div>
                     </div>
                 </div>
@@ -321,7 +378,7 @@
                 <div class="coluna col-12">
                     <div class="campo">
                         <label class="rotulo">13 - ENDEREÇO (RUA, Nº, BAIRRO)</label>
-                        <input type="text" id="endereco">
+                        <input type="text" id="endereco1">
                     </div>
                 </div>
             </div>
@@ -330,19 +387,19 @@
                 <div class="coluna col-5">
                     <div class="campo">
                         <label class="rotulo">14 - MUNICÍPIO DE RESIDÊNCIA</label>
-                        <input type="text" id="municipio">
+                        <input type="text" id="municipio1">
                     </div>
                 </div>
                 <div class="coluna col-3">
                     <div class="campo">
                         <label class="rotulo">15 - CÓD. IBGE MUNICÍPIO</label>
-                        <input type="text" id="codIbge">
+                        <input type="text" id="codIbge1">
                     </div>
                 </div>
                 <div class="coluna col-2">
                     <div class="campo">
                         <label class="rotulo">16 - UF</label>
-                        <select id="uf">
+                        <select id="uf1">
                             <option value=""></option>
                             <option value="AC">AC</option>
                             <option value="AL">AL</option>
@@ -377,7 +434,7 @@
                 <div class="coluna col-2">
                     <div class="campo">
                         <label class="rotulo">17 - CEP</label>
-                        <input type="text" id="cep">
+                        <input type="text" id="cep1">
                     </div>
                 </div>
             </div>
@@ -389,19 +446,19 @@
                 <div class="coluna col-3">
                     <div class="campo">
                         <label class="rotulo">18 - CÓDIGO DO PROCEDIMENTO PRINCIPAL</label>
-                        <input type="text" id="codProcPrincipal">
+                        <input type="text" id="codProcPrincipal1" value="02.09.01.003-7">
                     </div>
                 </div>
                 <div class="coluna col-8">
                     <div class="campo">
                         <label class="rotulo">19 - NOME DO PROCEDIMENTO PRINCIPAL</label>
-                        <input type="text" id="nomeProcPrincipal" value="CONSULTA EM CIRURGIA GERAL">
+                        <input type="text" id="nomeProcPrincipal1" value="ESOFAGOGASTRODUODENOSCOPIA">
                     </div>
                 </div>
                 <div class="coluna col-1">
                     <div class="campo">
                         <label class="rotulo">20 - QTDE.</label>
-                        <input type="text" id="qtdProcPrincipal">
+                        <input type="text" id="qtdProcPrincipal1">
                     </div>
                 </div>
             </div>
@@ -411,19 +468,19 @@
                 <div class="coluna col-3">
                     <div class="campo">
                         <label class="rotulo">21 - CÓDIGO DO PROCEDIMENTO SECUNDÁRIO</label>
-                        <input type="text" id="codProcSec1">
+                        <input type="text" id="codProcSec1_1">
                     </div>
                 </div>
                 <div class="coluna col-8">
                     <div class="campo">
                         <label class="rotulo">22 - NOME DO PROCEDIMENTO SECUNDÁRIO</label>
-                        <input type="text" id="nomeProcSec1">
+                        <input type="text" id="nomeProcSec1_1">
                     </div>
                 </div>
                 <div class="coluna col-1">
                     <div class="campo">
                         <label class="rotulo">23 - QTDE.</label>
-                        <input type="text" id="qtdProcSec1">
+                        <input type="text" id="qtdProcSec1_1">
                     </div>
                 </div>
             </div>
@@ -432,19 +489,19 @@
                 <div class="coluna col-3">
                     <div class="campo">
                         <label class="rotulo">24 - CÓDIGO DO PROCEDIMENTO SECUNDÁRIO</label>
-                        <input type="text" id="codProcSec2">
+                        <input type="text" id="codProcSec2_1">
                     </div>
                 </div>
                 <div class="coluna col-8">
                     <div class="campo">
                         <label class="rotulo">25 - NOME DO PROCEDIMENTO SECUNDÁRIO</label>
-                        <input type="text" id="nomeProcSec2">
+                        <input type="text" id="nomeProcSec2_1">
                     </div>
                 </div>
                 <div class="coluna col-1">
                     <div class="campo">
                         <label class="rotulo">26 - QTDE.</label>
-                        <input type="text" id="qtdProcSec2">
+                        <input type="text" id="qtdProcSec2_1">
                     </div>
                 </div>
             </div>
@@ -453,19 +510,19 @@
                 <div class="coluna col-3">
                     <div class="campo">
                         <label class="rotulo">27 - CÓDIGO DO PROCEDIMENTO SECUNDÁRIO</label>
-                        <input type="text" id="codProcSec3">
+                        <input type="text" id="codProcSec3_1">
                     </div>
                 </div>
                 <div class="coluna col-8">
                     <div class="campo">
                         <label class="rotulo">28 - NOME DO PROCEDIMENTO SECUNDÁRIO</label>
-                        <input type="text" id="nomeProcSec3">
+                        <input type="text" id="nomeProcSec3_1">
                     </div>
                 </div>
                 <div class="coluna col-1">
                     <div class="campo">
                         <label class="rotulo">29 - QTDE.</label>
-                        <input type="text" id="qtdProcSec3">
+                        <input type="text" id="qtdProcSec3_1">
                     </div>
                 </div>
             </div>
@@ -474,19 +531,19 @@
                 <div class="coluna col-3">
                     <div class="campo">
                         <label class="rotulo">30 - CÓDIGO DO PROCEDIMENTO SECUNDÁRIO</label>
-                        <input type="text" id="codProcSec4">
+                        <input type="text" id="codProcSec4_1">
                     </div>
                 </div>
                 <div class="coluna col-8">
                     <div class="campo">
                         <label class="rotulo">31 - NOME DO PROCEDIMENTO SECUNDÁRIO</label>
-                        <input type="text" id="nomeProcSec4">
+                        <input type="text" id="nomeProcSec4_1">
                     </div>
                 </div>
                 <div class="coluna col-1">
                     <div class="campo">
                         <label class="rotulo">32 - QTDE.</label>
-                        <input type="text" id="qtdProcSec4">
+                        <input type="text" id="qtdProcSec4_1">
                     </div>
                 </div>
             </div>
@@ -495,19 +552,19 @@
                 <div class="coluna col-3">
                     <div class="campo">
                         <label class="rotulo">33 - CÓDIGO DO PROCEDIMENTO SECUNDÁRIO</label>
-                        <input type="text" id="codProcSec5">
+                        <input type="text" id="codProcSec5_1">
                     </div>
                 </div>
                 <div class="coluna col-8">
                     <div class="campo">
                         <label class="rotulo">34 - NOME DO PROCEDIMENTO SECUNDÁRIO</label>
-                        <input type="text" id="nomeProcSec5">
+                        <input type="text" id="nomeProcSec5_1">
                     </div>
                 </div>
                 <div class="coluna col-1">
                     <div class="campo">
                         <label class="rotulo">35 - QTDE.</label>
-                        <input type="text" id="qtdProcSec5">
+                        <input type="text" id="qtdProcSec5_1">
                     </div>
                 </div>
             </div>
@@ -519,25 +576,25 @@
                 <div class="coluna col-6">
                     <div class="campo">
                         <label class="rotulo">36 - DESCRIÇÃO DO DIAGNÓSTICO</label>
-                        <input type="text" id="descricaoDiagnostico" value="COLELITIASE">
+                        <input type="text" id="descricaoDiagnostico1" value="PÓS OPERATÓRIO DE CIRURGIA BARIÁTRICA">
                     </div>
                 </div>
                 <div class="coluna col-2">
                     <div class="campo">
                         <label class="rotulo">37 - CID10 PRINCIPAL</label>
-                        <input type="text" id="cid10Principal" value="K802">
+                        <input type="text" id="cid10Principal1" value="Z988">
                     </div>
                 </div>
                 <div class="coluna col-2">
                     <div class="campo">
                         <label class="rotulo">38 - CID10 SECUNDÁRIO</label>
-                        <input type="text" id="cid10Secundario" value="">
+                        <input type="text" id="cid10Secundario1" value="">
                     </div>
                 </div>
                 <div class="coluna col-2">
                     <div class="campo">
                         <label class="rotulo">39 - CID10 CAUSAS ASSOCIADAS</label>
-                        <input type="text" id="cid10Causas">
+                        <input type="text" id="cid10Causas1">
                     </div>
                 </div>
             </div>
@@ -546,7 +603,7 @@
                 <div class="coluna col-12">
                     <div class="campo">
                         <label class="rotulo">40 - OBSERVAÇÕES</label>
-                        <textarea id="observacoes" style="height: 60px;">ENCAMINHO PACIENTE EM POS OPERATÓRIO DE CIRURGIA BARIATRICA (BYPASS GASTRICO), APRESENTANDO COLELITIASE COM NECESSIDADE DE COLECISTECTOMIA DEVIDO DESVIO INTESTINAL QUE IMPEDE ACESSO A VIA BILIAR VIA ENDOSCÓPICA CONVENCIONAL.</textarea>
+                        <textarea id="observacoes1" style="height: 60px;">PACIENTE EM PÓS OPERATÓRIO DE CIRURGIA BARIÁTRICA COM NECESSIDADE DE REALIZAR ENDOSCOPIA DIGESTIVA DE CONTROLE.</textarea>
                     </div>
                 </div>
             </div>
@@ -558,23 +615,23 @@
                 <div class="coluna col-6">
                     <div class="campo">
                         <label class="rotulo">41 - NOME DO PROFISSIONAL SOLICITANTE</label>
-                        <input type="text" id="nomeProfSolicitante">
+                        <input type="text" id="nomeProfSolicitante1">
                     </div>
                 </div>
                 <div class="coluna col-3">
                     <div class="campo">
                         <label class="rotulo">42 - DATA DA SOLICITAÇÃO</label>
-                        <input type="date" id="dataSolicitacao">
+                        <input type="date" id="dataSolicitacao1">
                     </div>
                 </div>
                 <div class="coluna col-3">
                     <div class="campo">
                         <label class="rotulo">43 - DOCUMENTO</label>
                         <div class="checkbox-group">
-                            <input type="radio" id="docCNS" name="tipoDocSolicitante" value="CNS">
-                            <label for="docCNS">CNS</label>
-                            <input type="radio" id="docCPF" name="tipoDocSolicitante" value="CPF">
-                            <label for="docCPF">CPF</label>
+                            <input type="radio" id="docCNS1" name="tipoDocSolicitante1" value="CNS">
+                            <label for="docCNS1">CNS</label>
+                            <input type="radio" id="docCPF1" name="tipoDocSolicitante1" value="CPF">
+                            <label for="docCPF1">CPF</label>
                         </div>
                     </div>
                 </div>
@@ -584,7 +641,7 @@
                 <div class="coluna col-6">
                     <div class="campo">
                         <label class="rotulo">44 - Nº DOCUMENTO (CNS/CPF) DO PROFISSIONAL SOLICITANTE</label>
-                        <input type="text" id="numDocProfSolicitante">
+                        <input type="text" id="numDocProfSolicitante1">
                     </div>
                 </div>
                 <div class="coluna col-6">
@@ -602,23 +659,23 @@
                 <div class="coluna col-6">
                     <div class="campo">
                         <label class="rotulo">46 - NOME DO PROFISSIONAL AUTORIZADOR</label>
-                        <input type="text" id="nomeProfAutorizador">
+                        <input type="text" id="nomeProfAutorizador1">
                     </div>
                 </div>
                 <div class="coluna col-3">
                     <div class="campo">
                         <label class="rotulo">47 - CÓD. ÓRGÃO EMISSOR</label>
-                        <input type="text" id="codOrgaoEmissor">
+                        <input type="text" id="codOrgaoEmissor1">
                     </div>
                 </div>
                 <div class="coluna col-3">
                     <div class="campo">
                         <label class="rotulo">48 - DOCUMENTO</label>
                         <div class="checkbox-group">
-                            <input type="radio" id="docCNSAut" name="tipoDocAutorizador" value="CNS">
-                            <label for="docCNSAut">CNS</label>
-                            <input type="radio" id="docCPFAut" name="tipoDocAutorizador" value="CPF">
-                            <label for="docCPFAut">CPF</label>
+                            <input type="radio" id="docCNSAut1" name="tipoDocAutorizador1" value="CNS">
+                            <label for="docCNSAut1">CNS</label>
+                            <input type="radio" id="docCPFAut1" name="tipoDocAutorizador1" value="CPF">
+                            <label for="docCPFAut1">CPF</label>
                         </div>
                     </div>
                 </div>
@@ -628,13 +685,13 @@
                 <div class="coluna col-6">
                     <div class="campo">
                         <label class="rotulo">49 - Nº DOCUMENTO (CNS/CPF) DO PROFISSIONAL AUTORIZADOR</label>
-                        <input type="text" id="numDocProfAutorizador">
+                        <input type="text" id="numDocProfAutorizador1">
                     </div>
                 </div>
                 <div class="coluna col-3">
                     <div class="campo">
                         <label class="rotulo">50 - DATA DA AUTORIZAÇÃO</label>
-                        <input type="date" id="dataAutorizacao">
+                        <input type="date" id="dataAutorizacao1">
                     </div>
                 </div>
                 <div class="coluna col-3">
@@ -649,16 +706,16 @@
                 <div class="coluna col-4">
                     <div class="campo">
                         <label class="rotulo">52 - Nº DA AUTORIZAÇÃO (APAC)</label>
-                        <input type="text" id="numApac">
+                        <input type="text" id="numApac1">
                     </div>
                 </div>
                 <div class="coluna col-8">
                     <div class="campo">
                         <label class="rotulo">53 - PERÍODO DE VALIDADE DA APAC</label>
                         <div style="display: flex; align-items: center;">
-                            <input type="date" id="dataInicioApac" style="margin-right: 5px;">
+                            <input type="date" id="dataInicioApac1" style="margin-right: 5px;">
                             <span style="margin: 0 5px;">a</span>
-                            <input type="date" id="dataFimApac">
+                            <input type="date" id="dataFimApac1">
                         </div>
                     </div>
                 </div>
@@ -671,40 +728,561 @@
                 <div class="coluna col-9">
                     <div class="campo">
                         <label class="rotulo">54 - NOME FANTASIA DO ESTABELECIMENTO DE SAÚDE EXECUTANTE</label>
-                        <input type="text" id="estabelecimentoExecutante">
+                        <input type="text" id="estabelecimentoExecutante1">
                     </div>
                 </div>
                 <div class="coluna col-3">
                     <div class="campo">
                         <label class="rotulo">55 - CNES</label>
-                        <input type="text" id="cnesExecutante">
+                        <input type="text" id="cnesExecutante1">
                     </div>
                 </div>
             </div>
         </div>
         
         <div class="botoes">
-            <button id="btnLimpar" onclick="limparFormulario()">Limpar Formulário</button>
-            <button id="btnImprimir" onclick="imprimirFormulario()">Imprimir</button>
+            <button class="btnLimpar" onclick="limparFormulario('formEndoscopia')">Limpar Formulário</button>
+            <button class="btnImprimir" onclick="imprimirFormulario()">Imprimir</button>
         </div>
     </div>
-    
+
+    <!-- Formulário 2: Cirurgia -->
+    <div class="formulario" id="formCirurgia">
+        <div class="cabecalho">
+            <div class="logo-sus">Sistema<br>Único de<br>Saúde</div>
+            <div class="titulo">LAUDO PARA SOLICITAÇÃO/AUTORIZAÇÃO DE<br>PROCEDIMENTO AMBULATORIAL</div>
+            <div class="logo">Ministério<br>da<br>Saúde</div>
+        </div>
+        
+        <div class="secao">
+            <div class="titulo-secao">IDENTIFICAÇÃO DO ESTABELECIMENTO DE SAÚDE (SOLICITANTE)</div>
+            <div class="linha">
+                <div class="coluna col-9">
+                    <div class="campo">
+                        <label class="rotulo">1 - NOME DO ESTABELECIMENTO DE SAÚDE SOLICITANTE</label>
+                        <input type="text" id="estabelecimentoSolicitante2" value="HOSPITAL METROPOLITANO DE VÁRZEA GRANDE">
+                    </div>
+                </div>
+                <div class="coluna col-3">
+                    <div class="campo">
+                        <label class="rotulo">2 - CNES</label>
+                        <input type="text" id="cnesSolicitante2" value="6853781">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="secao">
+            <div class="titulo-secao">IDENTIFICAÇÃO DO PACIENTE</div>
+            <div class="linha">
+                <div class="coluna col-8">
+                    <div class="campo">
+                        <label class="rotulo">3 - NOME DO PACIENTE</label>
+                        <input type="text" id="nomePaciente2">
+                    </div>
+                </div>
+                <div class="coluna col-2">
+                    <div class="campo">
+                        <label class="rotulo">4 - SEXO</label>
+                        <div class="checkbox-group">
+                            <input type="radio" id="sexoMasc2" name="sexo2" value="Mas.">
+                            <label for="sexoMasc2">Mas.</label>
+                            <input type="radio" id="sexoFem2" name="sexo2" value="Fem.">
+                            <label for="sexoFem2">Fem.</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="coluna col-2">
+                    <div class="campo">
+                        <label class="rotulo">5 - Nº DO PRONTUÁRIO</label>
+                        <input type="text" id="numProntuario2">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="linha">
+                <div class="coluna col-4">
+                    <div class="campo">
+                        <label class="rotulo">6 - CARTÃO NACIONAL DE SAÚDE (CNS)</label>
+                        <input type="text" id="cns2">
+                    </div>
+                </div>
+                <div class="coluna col-2">
+                    <div class="campo">
+                        <label class="rotulo">7 - DATA DE NASCIMENTO</label>
+                        <input type="date" id="dataNascimento2">
+                    </div>
+                </div>
+                <div class="coluna col-2">
+                    <div class="campo">
+                        <label class="rotulo">8 - RAÇA/COR</label>
+                        <select id="racaCor2">
+                            <option value=""></option>
+                            <option value="1">Branca</option>
+                            <option value="2">Preta</option>
+                            <option value="3">Parda</option>
+                            <option value="4">Amarela</option>
+                            <option value="5">Indígena</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="coluna col-4">
+                    <div class="campo">
+                        <label class="rotulo">8.1 - ETNIA</label>
+                        <input type="text" id="etnia2">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="linha">
+                <div class="coluna col-6">
+                    <div class="campo">
+                        <label class="rotulo">9 - NOME DA MÃE</label>
+                        <input type="text" id="nomeMae2">
+                    </div>
+                </div>
+                <div class="coluna col-6">
+                    <div class="campo">
+                        <label class="rotulo">10 - TELEFONE DE CONTATO</label>
+                        <div class="linha">
+                            <input type="text" id="dddContato2" placeholder="DDD" style="width: 50px; margin-right: 5px;">
+                            <input type="text" id="telefoneContato2" placeholder="Nº DO TELEFONE">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="linha">
+                <div class="coluna col-6">
+                    <div class="campo">
+                        <label class="rotulo">11 - NOME DO RESPONSÁVEL</label>
+                        <input type="text" id="nomeResponsavel2">
+                    </div>
+                </div>
+                <div class="coluna col-6">
+                    <div class="campo">
+                        <label class="rotulo">12 - TELEFONE DE CONTATO</label>
+                        <div class="linha">
+                            <input type="text" id="dddResponsavel2" placeholder="DDD" style="width: 50px; margin-right: 5px;">
+                            <input type="text" id="telefoneResponsavel2" placeholder="Nº DO TELEFONE">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="linha">
+                <div class="coluna col-12">
+                    <div class="campo">
+                        <label class="rotulo">13 - ENDEREÇO (RUA, Nº, BAIRRO)</label>
+                        <input type="text" id="endereco2">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="linha">
+                <div class="coluna col-5">
+                    <div class="campo">
+                        <label class="rotulo">14 - MUNICÍPIO DE RESIDÊNCIA</label>
+                        <input type="text" id="municipio2">
+                    </div>
+                </div>
+                <div class="coluna col-3">
+                    <div class="campo">
+                        <label class="rotulo">15 - CÓD. IBGE MUNICÍPIO</label>
+                        <input type="text" id="codIbge2">
+                    </div>
+                </div>
+                <div class="coluna col-2">
+                    <div class="campo">
+                        <label class="rotulo">16 - UF</label>
+                        <select id="uf2">
+                            <option value=""></option>
+                            <option value="AC">AC</option>
+                            <option value="AL">AL</option>
+                            <option value="AM">AM</option>
+                            <option value="AP">AP</option>
+                            <option value="BA">BA</option>
+                            <option value="CE">CE</option>
+                            <option value="DF">DF</option>
+                            <option value="ES">ES</option>
+                            <option value="GO">GO</option>
+                            <option value="MA">MA</option>
+                            <option value="MG">MG</option>
+                            <option value="MS">MS</option>
+                            <option value="MT">MT</option>
+                            <option value="PA">PA</option>
+                            <option value="PB">PB</option>
+                            <option value="PE">PE</option>
+                            <option value="PI">PI</option>
+                            <option value="PR">PR</option>
+                            <option value="RJ">RJ</option>
+                            <option value="RN">RN</option>
+                            <option value="RO">RO</option>
+                            <option value="RR">RR</option>
+                            <option value="RS">RS</option>
+                            <option value="SC">SC</option>
+                            <option value="SE">SE</option>
+                            <option value="SP">SP</option>
+                            <option value="TO">TO</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="coluna col-2">
+                    <div class="campo">
+                        <label class="rotulo">17 - CEP</label>
+                        <input type="text" id="cep2">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="secao">
+            <div class="titulo-secao">PROCEDIMENTO(S) SOLICITADO(S)</div>
+            <div class="linha">
+                <div class="coluna col-3">
+                    <div class="campo">
+                        <label class="rotulo">18 - CÓDIGO DO PROCEDIMENTO PRINCIPAL</label>
+                        <input type="text" id="codProcPrincipal2">
+                    </div>
+                </div>
+                <div class="coluna col-8">
+                    <div class="campo">
+                        <label class="rotulo">19 - NOME DO PROCEDIMENTO PRINCIPAL</label>
+                        <input type="text" id="nomeProcPrincipal2" value="CONSULTA EM CIRURGIA GERAL">
+                    </div>
+                </div>
+                <div class="coluna col-1">
+                    <div class="campo">
+                        <label class="rotulo">20 - QTDE.</label>
+                        <input type="text" id="qtdProcPrincipal2">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="titulo-secao">PROCEDIMENTO(S) SECUNDÁRIO(S)</div>
+            <div class="linha">
+                <div class="coluna col-3">
+                    <div class="campo">
+                        <label class="rotulo">21 - CÓDIGO DO PROCEDIMENTO SECUNDÁRIO</label>
+                        <input type="text" id="codProcSec1_2">
+                    </div>
+                </div>
+                <div class="coluna col-8">
+                    <div class="campo">
+                        <label class="rotulo">22 - NOME DO PROCEDIMENTO SECUNDÁRIO</label>
+                        <input type="text" id="nomeProcSec1_2">
+                    </div>
+                </div>
+                <div class="coluna col-1">
+                    <div class="campo">
+                        <label class="rotulo">23 - QTDE.</label>
+                        <input type="text" id="qtdProcSec1_2">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="linha">
+                <div class="coluna col-3">
+                    <div class="campo">
+                        <label class="rotulo">24 - CÓDIGO DO PROCEDIMENTO SECUNDÁRIO</label>
+                        <input type="text" id="codProcSec2_2">
+                    </div>
+                </div>
+                <div class="coluna col-8">
+                    <div class="campo">
+                        <label class="rotulo">25 - NOME DO PROCEDIMENTO SECUNDÁRIO</label>
+                        <input type="text" id="nomeProcSec2_2">
+                    </div>
+                </div>
+                <div class="coluna col-1">
+                    <div class="campo">
+                        <label class="rotulo">26 - QTDE.</label>
+                        <input type="text" id="qtdProcSec2_2">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="linha">
+                <div class="coluna col-3">
+                    <div class="campo">
+                        <label class="rotulo">27 - CÓDIGO DO PROCEDIMENTO SECUNDÁRIO</label>
+                        <input type="text" id="codProcSec3_2">
+                    </div>
+                </div>
+                <div class="coluna col-8">
+                    <div class="campo">
+                        <label class="rotulo">28 - NOME DO PROCEDIMENTO SECUNDÁRIO</label>
+                        <input type="text" id="nomeProcSec3_2">
+                    </div>
+                </div>
+                <div class="coluna col-1">
+                    <div class="campo">
+                        <label class="rotulo">29 - QTDE.</label>
+                        <input type="text" id="qtdProcSec3_2">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="linha">
+                <div class="coluna col-3">
+                    <div class="campo">
+                        <label class="rotulo">30 - CÓDIGO DO PROCEDIMENTO SECUNDÁRIO</label>
+                        <input type="text" id="codProcSec4_2">
+                    </div>
+                </div>
+                <div class="coluna col-8">
+                    <div class="campo">
+                        <label class="rotulo">31 - NOME DO PROCEDIMENTO SECUNDÁRIO</label>
+                        <input type="text" id="nomeProcSec4_2">
+                    </div>
+                </div>
+                <div class="coluna col-1">
+                    <div class="campo">
+                        <label class="rotulo">32 - QTDE.</label>
+                        <input type="text" id="qtdProcSec4_2">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="linha">
+                <div class="coluna col-3">
+                    <div class="campo">
+                        <label class="rotulo">33 - CÓDIGO DO PROCEDIMENTO SECUNDÁRIO</label>
+                        <input type="text" id="codProcSec5_2">
+                    </div>
+                </div>
+                <div class="coluna col-8">
+                    <div class="campo">
+                        <label class="rotulo">34 - NOME DO PROCEDIMENTO SECUNDÁRIO</label>
+                        <input type="text" id="nomeProcSec5_2">
+                    </div>
+                </div>
+                <div class="coluna col-1">
+                    <div class="campo">
+                        <label class="rotulo">35 - QTDE.</label>
+                        <input type="text" id="qtdProcSec5_2">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="secao">
+            <div class="titulo-secao">JUSTIFICATIVA DO(S) PROCEDIMENTO(S) SOLICITADO(S)</div>
+            <div class="linha">
+                <div class="coluna col-6">
+                    <div class="campo">
+                        <label class="rotulo">36 - DESCRIÇÃO DO DIAGNÓSTICO</label>
+                        <input type="text" id="descricaoDiagnostico2" value="COLELITIASE">
+                    </div>
+                </div>
+                <div class="coluna col-2">
+                    <div class="campo">
+                        <label class="rotulo">37 - CID10 PRINCIPAL</label>
+                        <input type="text" id="cid10Principal2" value="K802">
+                    </div>
+                </div>
+                <div class="coluna col-2">
+                    <div class="campo">
+                        <label class="rotulo">38 - CID10 SECUNDÁRIO</label>
+                        <input type="text" id="cid10Secundario2" value="">
+                    </div>
+                </div>
+                <div class="coluna col-2">
+                    <div class="campo">
+                        <label class="rotulo">39 - CID10 CAUSAS ASSOCIADAS</label>
+                        <input type="text" id="cid10Causas2">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="linha">
+                <div class="coluna col-12">
+                    <div class="campo">
+                        <label class="rotulo">40 - OBSERVAÇÕES</label>
+                        <textarea id="observacoes2" style="height: 60px;">ENCAMINHO PACIENTE EM POS OPERATÓRIO DE CIRURGIA BARIATRICA (BYPASS GASTRICO), APRESENTANDO COLELITIASE COM NECESSIDADE DE COLECISTECTOMIA DEVIDO DESVIO INTESTINAL QUE IMPEDE ACESSO A VIA BILIAR VIA ENDOSCÓPICA CONVENCIONAL.</textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="secao">
+            <div class="titulo-secao">SOLICITAÇÃO</div>
+            <div class="linha">
+                <div class="coluna col-6">
+                    <div class="campo">
+                        <label class="rotulo">41 - NOME DO PROFISSIONAL SOLICITANTE</label>
+                        <input type="text" id="nomeProfSolicitante2">
+                    </div>
+                </div>
+                <div class="coluna col-3">
+                    <div class="campo">
+                        <label class="rotulo">42 - DATA DA SOLICITAÇÃO</label>
+                        <input type="date" id="dataSolicitacao2">
+                    </div>
+                </div>
+                <div class="coluna col-3">
+                    <div class="campo">
+                        <label class="rotulo">43 - DOCUMENTO</label>
+                        <div class="checkbox-group">
+                            <input type="radio" id="docCNS2" name="tipoDocSolicitante2" value="CNS">
+                            <label for="docCNS2">CNS</label>
+                            <input type="radio" id="docCPF2" name="tipoDocSolicitante2" value="CPF">
+                            <label for="docCPF2">CPF</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="linha">
+                <div class="coluna col-6">
+                    <div class="campo">
+                        <label class="rotulo">44 - Nº DOCUMENTO (CNS/CPF) DO PROFISSIONAL SOLICITANTE</label>
+                        <input type="text" id="numDocProfSolicitante2">
+                    </div>
+                </div>
+                <div class="coluna col-6">
+                    <div class="campo">
+                        <label class="rotulo">45 - ASSINATURA E CARIMBO (Nº REGISTRO DO CONSELHO)</label>
+                        <div class="assinatura">Assinatura e carimbo</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="secao">
+            <div class="titulo-secao">AUTORIZAÇÃO</div>
+            <div class="linha">
+                <div class="coluna col-6">
+                    <div class="campo">
+                        <label class="rotulo">46 - NOME DO PROFISSIONAL AUTORIZADOR</label>
+                        <input type="text" id="nomeProfAutorizador2">
+                    </div>
+                </div>
+                <div class="coluna col-3">
+                    <div class="campo">
+                        <label class="rotulo">47 - CÓD. ÓRGÃO EMISSOR</label>
+                        <input type="text" id="codOrgaoEmissor2">
+                    </div>
+                </div>
+                <div class="coluna col-3">
+                    <div class="campo">
+                        <label class="rotulo">48 - DOCUMENTO</label>
+                        <div class="checkbox-group">
+                            <input type="radio" id="docCNSAut2" name="tipoDocAutorizador2" value="CNS">
+                            <label for="docCNSAut2">CNS</label>
+                            <input type="radio" id="docCPFAut2" name="tipoDocAutorizador2" value="CPF">
+                            <label for="docCPFAut2">CPF</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="linha">
+                <div class="coluna col-6">
+                    <div class="campo">
+                        <label class="rotulo">49 - Nº DOCUMENTO (CNS/CPF) DO PROFISSIONAL AUTORIZADOR</label>
+                        <input type="text" id="numDocProfAutorizador2">
+                    </div>
+                </div>
+                <div class="coluna col-3">
+                    <div class="campo">
+                        <label class="rotulo">50 - DATA DA AUTORIZAÇÃO</label>
+                        <input type="date" id="dataAutorizacao2">
+                    </div>
+                </div>
+                <div class="coluna col-3">
+                    <div class="campo">
+                        <label class="rotulo">51 - ASSINATURA E CARIMBO (Nº DO REGISTRO DO CONSELHO)</label>
+                        <div class="assinatura">Assinatura e carimbo</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="linha">
+                <div class="coluna col-4">
+                    <div class="campo">
+                        <label class="rotulo">52 - Nº DA AUTORIZAÇÃO (APAC)</label>
+                        <input type="text" id="numApac2">
+                    </div>
+                </div>
+                <div class="coluna col-8">
+                    <div class="campo">
+                        <label class="rotulo">53 - PERÍODO DE VALIDADE DA APAC</label>
+                        <div style="display: flex; align-items: center;">
+                            <input type="date" id="dataInicioApac2" style="margin-right: 5px;">
+                            <span style="margin: 0 5px;">a</span>
+                            <input type="date" id="dataFimApac2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="secao">
+            <div class="titulo-secao">IDENTIFICAÇÃO DO ESTABELECIMENTO DE SAÚDE (EXECUTANTE)</div>
+            <div class="linha">
+                <div class="coluna col-9">
+                    <div class="campo">
+                        <label class="rotulo">54 - NOME FANTASIA DO ESTABELECIMENTO DE SAÚDE EXECUTANTE</label>
+                        <input type="text" id="estabelecimentoExecutante2">
+                    </div>
+                </div>
+                <div class="coluna col-3">
+                    <div class="campo">
+                        <label class="rotulo">55 - CNES</label>
+                        <input type="text" id="cnesExecutante2">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="botoes">
+            <button class="btnLimpar" onclick="limparFormulario('formCirurgia')">Limpar Formulário</button>
+            <button class="btnImprimir" onclick="imprimirFormulario()">Imprimir</button>
+        </div>
+    </div>
+
     <script>
-        function limparFormulario() {
-            const inputs = document.querySelectorAll('input');
-            const textareas = document.querySelectorAll('textarea');
-            const selects = document.querySelectorAll('select');
+        // Função para trocar entre formulários
+        function trocarFormulario() {
+            const selector = document.getElementById('tipoDocumento');
+            const formEndoscopia = document.getElementById('formEndoscopia');
+            const formCirurgia = document.getElementById('formCirurgia');
+            
+            if (selector.value === 'endoscopia') {
+                formEndoscopia.classList.add('active');
+                formCirurgia.classList.remove('active');
+            } else {
+                formEndoscopia.classList.remove('active');
+                formCirurgia.classList.add('active');
+            }
+        }
+        
+        // Função para limpar formulário específico
+        function limparFormulario(formId) {
+            const form = document.getElementById(formId);
+            const inputs = form.querySelectorAll('input');
+            const textareas = form.querySelectorAll('textarea');
+            const selects = form.querySelectorAll('select');
             
             inputs.forEach(input => {
                 if (input.type === 'radio' || input.type === 'checkbox') {
                     input.checked = false;
-                } else {
+                } else if (!input.id.includes('estabelecimentoSolicitante') && 
+                          !input.id.includes('cnesSolicitante') &&
+                          !input.id.includes('nomeProcPrincipal') &&
+                          !input.id.includes('codProcPrincipal') &&
+                          !input.id.includes('descricaoDiagnostico') &&
+                          !input.id.includes('cid10Principal')) {
+                    // Não limpar campos pré-preenchidos
                     input.value = '';
                 }
             });
             
             textareas.forEach(textarea => {
-                textarea.value = '';
+                if (!textarea.id.includes('observacoes')) {
+                    textarea.value = '';
+                }
             });
             
             selects.forEach(select => {
@@ -712,22 +1290,30 @@
             });
         }
         
+        // Função para imprimir
         function imprimirFormulario() {
             window.print();
         }
         
-        // Formatar campos automaticamente
-        document.getElementById('cep').addEventListener('input', function (e) {
-            let value = e.target.value.replace(/\D/g, '');
-            if (value.length > 5) {
-                value = value.substring(0, 5) + '-' + value.substring(5, 8);
-            }
-            e.target.value = value;
-        });
+        // Formatar CEP automaticamente
+        function formatarCEP(inputId) {
+            document.getElementById(inputId).addEventListener('input', function (e) {
+                let value = e.target.value.replace(/\D/g, '');
+                if (value.length > 5) {
+                    value = value.substring(0, 5) + '-' + value.substring(5, 8);
+                }
+                e.target.value = value;
+            });
+        }
+        
+        // Aplicar formatação de CEP para ambos os formulários
+        formatarCEP('cep1');
+        formatarCEP('cep2');
         
         // Inicializar com a data atual
         const dataAtual = new Date().toISOString().split('T')[0];
-        document.getElementById('dataSolicitacao').value = dataAtual;
+        document.getElementById('dataSolicitacao1').value = dataAtual;
+        document.getElementById('dataSolicitacao2').value = dataAtual;
     </script>
 </body>
 </html>
